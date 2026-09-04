@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đề kiểm tra HSK4 (2.0) — Bài 1-5</title>
+<style>
+:root{
+  --bg-app: #FBF5E8;
+  --bg-app-2: #F5EFE0;
+  --ink: #332C22;
+  --ink-soft: #7A7061;
+  --card-bg: #FFFDF8;
+  --card-line: #EFE6D2;
+  --shadow: rgba(80, 60, 20, 0.10);
+  --shadow-strong: rgba(80, 60, 20, 0.18);
+
+  --c-cover-1:#FF9F5A; --c-cover-2:#E0729A; --c-cover-3:#6C63FF; --c-cover-4:#33B08A;
+
+  --c-vocab:#B6862B;   --c-vocab-bg:#FBF1DB;   --c-vocab-line:#EAD6A0;   /* I.A Từ vựng */
+  --c-summary:#5A50D6; --c-summary-bg:#ECEAFC; --c-summary-line:#C9C1F5; /* I.B Ngữ pháp */
+  --c-culture:#C94E7E; --c-culture-bg:#FCE9F0; --c-culture-line:#F3B9D1; /* I.C Đúng/Sai */
+  --c-practice:#1F9E77;--c-practice-bg:#E4F8F1;--c-practice-line:#A9E4CC;/* II Sắp xếp câu */
+
+  --font-zh: "KaiTi","Kaiti SC","STKaiti","AR PL KaitiM GB","Kaiti",serif;
+  --font-latin: "Times New Roman", Times, serif;
+}
+*{box-sizing:border-box;}
+html{font-size:17px;}
+body{
+  margin:0; font-family:var(--font-latin); background:var(--bg-app); color:var(--ink);
+  line-height:1.55;
+}
+h1,h2,h3,h4,p,ul,ol,li,button,input,label{font-family:var(--font-latin);}
+.zh, .zh *{font-family:var(--font-zh); font-size:1.35em;}
+
+/* ---------- Layout wrappers ---------- */
+.screen{display:none; max-width:880px; margin:0 auto; padding:24px 18px 90px;}
+.screen.active{display:block;}
+
+/* ---------- Start screen ---------- */
+.cover-card{
+  background:var(--card-bg); border:1px solid var(--card-line); border-radius:22px;
+  box-shadow:0 10px 30px var(--shadow); padding:36px 30px; margin-top:6vh;
+  text-align:center;
+}
+.cover-badge{
+  display:inline-block; padding:6px 16px; border-radius:999px; font-size:0.82rem;
+  background:linear-gradient(90deg, var(--c-cover-1), var(--c-cover-2) 55%, var(--c-cover-3));
+  color:#FFF6E8; margin-bottom:14px; letter-spacing:0.5px;
+}
+.cover-card h1{font-size:1.9rem; margin:6px 0 4px; color:var(--ink);}
+.cover-card .sub{color:var(--ink-soft); font-size:1.02rem; margin-bottom:22px;}
+.info-grid{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:20px 0 26px;
+}
+.info-box{
+  background:var(--bg-app-2); border:1px solid var(--card-line); border-radius:14px;
+  padding:14px 8px;
+}
+.info-box .num{font-size:1.5rem; font-weight:bold; color:var(--c-summary);}
+.info-box .lbl{font-size:0.82rem; color:var(--ink-soft);}
+.name-fields{display:flex; gap:12px; margin-bottom:22px; text-align:left;}
+.name-fields div{flex:1;}
+.name-fields label{display:block; font-size:0.85rem; color:var(--ink-soft); margin-bottom:5px;}
+.name-fields input{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--card-line);
+  font-family:var(--font-latin); font-size:1rem; background:#fff;
+}
+.rules{
+  text-align:left; background:var(--bg-app-2); border-radius:14px; padding:16px 20px;
+  margin-bottom:26px; font-size:0.94rem; color:var(--ink-soft);
+}
+.rules b{color:var(--ink);}
+.btn-start{
+  background:linear-gradient(90deg, var(--c-cover-1), var(--c-cover-2) 55%, var(--c-cover-3));
+  color:#FFF6E8; border:none; padding:15px 40px; border-radius:14px; font-size:1.1rem;
+  cursor:pointer; box-shadow:0 8px 18px var(--shadow-strong); font-weight:bold;
+  font-family:var(--font-latin);
+}
+.btn-start:hover{opacity:0.92;}
+
+/* ---------- Top bar (quiz screen) ---------- */
+.topbar{
+  position:sticky; top:0; z-index:50; background:var(--bg-app);
+  border-bottom:1px solid var(--card-line); padding:12px 18px;
+  display:flex; align-items:center; gap:18px; box-shadow:0 4px 10px var(--shadow);
+}
+.topbar .title{font-weight:bold; font-size:1.02rem; flex-shrink:0;}
+.progress-wrap{flex:1; display:flex; align-items:center; gap:10px;}
+.progress-track{flex:1; height:12px; background:var(--bg-app-2); border-radius:999px; overflow:hidden; border:1px solid var(--card-line);}
+.progress-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--c-practice), var(--c-summary)); transition:width 0.25s;}
+.progress-txt{font-size:0.85rem; color:var(--ink-soft); white-space:nowrap;}
+.timer-box{
+  flex-shrink:0; background:var(--card-bg); border:1.5px solid var(--card-line); border-radius:12px;
+  padding:6px 14px; font-weight:bold; font-size:1.1rem; color:var(--c-summary); min-width:88px; text-align:center;
+}
+.timer-box.warn{color:#C94E7E; border-color:#F3B9D1; background:var(--c-culture-bg);}
+.timer-box.danger{color:#fff; background:#D64545; border-color:#D64545; animation:pulse 1s infinite;}
+@keyframes pulse{0%{opacity:1;}50%{opacity:0.6;}100%{opacity:1;}}
+
+/* ---------- Sections & question cards ---------- */
+.section-head{
+  margin:34px 0 14px; padding-bottom:8px; border-bottom:2px solid var(--card-line);
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.section-head h2{margin:0; font-size:1.3rem;}
+.section-head .pts{font-size:0.85rem; color:var(--ink-soft);}
+.q-card{
+  background:var(--card-bg); border:1px solid var(--card-line); border-left:6px solid var(--accent, #999);
+  border-radius:16px; padding:18px 20px; margin-bottom:16px; box-shadow:0 4px 12px var(--shadow);
+}
+.q-card .q-num{font-size:0.8rem; color:var(--accent-dark,#888); font-weight:bold; margin-bottom:6px;}
+.q-card .q-text{font-size:1.15rem; margin-bottom:14px;}
+.q-card .q-text .zh{font-size:1.3em;}
+
+.sec-a .q-card{--accent:var(--c-vocab-line); --accent-dark:var(--c-vocab);}
+.sec-b .q-card{--accent:var(--c-summary-line); --accent-dark:var(--c-summary);}
+.sec-c .q-card{--accent:var(--c-culture-line); --accent-dark:var(--c-culture);}
+.sec-d .q-card{--accent:var(--c-practice-line); --accent-dark:var(--c-practice);}
+
+.opts{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.opt{
+  display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px;
+  border:1.5px solid var(--card-line); cursor:pointer; background:#fff; transition:all .15s;
+}
+.opt:hover{border-color:var(--accent-dark,#999);}
+.opt.selected{border-color:var(--accent-dark,#999); background:var(--accent,#eee); font-weight:bold;}
+.opt .letter{
+  width:24px; height:24px; border-radius:50%; border:1.5px solid var(--ink-soft); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:0.8rem; background:#fff;
+}
+.opt.selected .letter{background:var(--accent-dark,#999); color:#fff; border-color:var(--accent-dark,#999);}
+
+.tf-row{display:flex; gap:12px; margin-bottom:12px;}
+.tf-btn{
+  flex:1; padding:10px; text-align:center; border-radius:12px; border:1.5px solid var(--card-line);
+  cursor:pointer; background:#fff; font-weight:bold;
+}
+.tf-btn.selected{border-color:var(--accent-dark,#999); background:var(--accent,#eee); color:var(--accent-dark,#999);}
+.correction-field label{display:block; font-size:0.85rem; color:var(--ink-soft); margin-bottom:6px;}
+.correction-field textarea{
+  width:100%; min-height:52px; border-radius:10px; border:1px solid var(--card-line); padding:10px;
+  font-family:var(--font-zh),var(--font-latin); font-size:1.05rem; resize:vertical;
+}
+
+.reorder-pool{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; min-height:48px;
+  padding:10px; background:var(--bg-app-2); border-radius:12px;}
+.reorder-answer{display:flex; flex-wrap:wrap; gap:8px; min-height:52px; padding:10px;
+  background:#fff; border:2px dashed var(--card-line); border-radius:12px; margin-bottom:10px;}
+.chip{
+  padding:8px 14px; border-radius:10px; background:var(--card-bg); border:1.5px solid var(--card-line);
+  cursor:pointer; font-size:1.15rem; box-shadow:0 2px 4px var(--shadow); user-select:none;
+}
+.chip:hover{border-color:var(--accent-dark,#999);}
+.chip-empty-hint{color:var(--ink-soft); font-size:0.85rem; font-style:italic;}
+.reorder-tools{display:flex; justify-content:flex-end;}
+.btn-reset{
+  background:none; border:1px solid var(--card-line); border-radius:10px; padding:6px 14px;
+  font-size:0.85rem; color:var(--ink-soft); cursor:pointer;
+}
+.btn-reset:hover{border-color:var(--accent-dark,#999); color:var(--accent-dark,#999);}
+
+/* ---------- Submit floating bar ---------- */
+.submit-bar{
+  position:fixed; bottom:0; left:0; right:0; background:var(--card-bg);
+  border-top:1px solid var(--card-line); padding:14px 20px; box-shadow:0 -6px 16px var(--shadow);
+  display:flex; justify-content:center; z-index:60;
+}
+.btn-submit{
+  background:linear-gradient(90deg, var(--c-practice), var(--c-summary));
+  color:#fff; border:none; padding:14px 46px; border-radius:14px; font-size:1.08rem;
+  font-weight:bold; cursor:pointer; box-shadow:0 8px 18px var(--shadow-strong);
+  font-family:var(--font-latin);
+}
+.btn-submit:hover{opacity:0.92;}
+
+/* ---------- Results screen ---------- */
+.result-hero{
+  background:linear-gradient(135deg, var(--c-cover-1), var(--c-cover-2) 55%, var(--c-cover-3));
+  border-radius:22px; padding:32px 28px; text-align:center; color:#FFF6E8; margin-top:18px;
+  box-shadow:0 10px 26px var(--shadow-strong);
+}
+.result-hero .score{font-size:3.4rem; font-weight:bold; margin:4px 0;}
+.result-hero .score span{font-size:1.6rem; opacity:0.85;}
+.result-hero .tier{font-size:1.15rem; font-weight:bold; margin-top:4px;}
+.result-hero .msg{font-size:0.95rem; opacity:0.92; margin-top:6px;}
+.result-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:22px 0;}
+.rstat{background:var(--card-bg); border:1px solid var(--card-line); border-radius:14px; padding:14px 8px; text-align:center;}
+.rstat .n{font-size:1.4rem; font-weight:bold;}
+.rstat .l{font-size:0.8rem; color:var(--ink-soft);}
+.review-item{
+  background:var(--card-bg); border:1px solid var(--card-line); border-radius:14px; padding:16px 18px;
+  margin-bottom:12px; border-left:6px solid #ccc;
+}
+.review-item.correct{border-left-color:var(--c-practice);}
+.review-item.wrong{border-left-color:#D64545;}
+.review-item .rh{display:flex; align-items:center; gap:10px; margin-bottom:8px; font-weight:bold;}
+.review-item .rh .mark{font-size:1.15rem;}
+.review-item .rq{margin-bottom:8px;}
+.review-item .ans-line{font-size:0.95rem; margin:4px 0;}
+.review-item .ans-line b{color:var(--ink);}
+.explain-box{
+  background:var(--bg-app-2); border-radius:10px; padding:10px 14px; margin-top:8px; font-size:0.92rem;
+  color:var(--ink-soft);
+}
+.explain-box b{color:var(--c-culture);}
+.btn-restart{
+  display:block; margin:26px auto 10px; background:none; border:1.5px solid var(--card-line);
+  padding:12px 30px; border-radius:12px; cursor:pointer; color:var(--ink-soft); font-size:0.95rem;
+  font-family:var(--font-latin);
+}
+.btn-restart:hover{border-color:var(--c-summary); color:var(--c-summary);}
+.section-mini-title{margin:26px 0 10px; font-size:1.1rem; font-weight:bold;}
+
+/* ---------- Invalidated screen ---------- */
+.invalid-hero{
+  background:linear-gradient(135deg, #D64545, #C94E7E 60%, #8A5CC9);
+  border-radius:22px; padding:38px 28px; text-align:center; color:#FFF6E8; margin-top:8vh;
+  box-shadow:0 10px 26px var(--shadow-strong);
+}
+.invalid-hero .icon{font-size:3rem;}
+.invalid-hero h2{margin:8px 0 4px; font-size:1.6rem;}
+.invalid-hero p{opacity:0.95; font-size:1rem; line-height:1.6;}
+.invalid-info{
+  background:var(--card-bg); border:1px solid var(--card-line); border-radius:16px;
+  padding:18px 22px; margin-top:20px; font-size:0.95rem; color:var(--ink-soft);
+}
+.invalid-info b{color:var(--ink);}
+.fs-banner{
+  position:fixed; top:0; left:0; right:0; z-index:100; background:#332C22; color:#FFE9BE;
+  text-align:center; padding:10px; font-size:0.9rem; display:none;
+}
+
+@media (max-width:600px){
+  .opts{grid-template-columns:1fr;}
+  .info-grid{grid-template-columns:repeat(2,1fr);}
+  .name-fields{flex-direction:column;}
+  .result-stats{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= START SCREEN ================= -->
+<div class="screen active" id="screen-start">
+  <div class="cover-card">
+    <span class="cover-badge">HSK4 (2.0) · Bài 1–5</span>
+    <h1>Đề Kiểm Tra Tổng Hợp</h1>
+    <div class="sub">Đọc hiểu &amp; Viết — Mức độ Khó – Rất khó</div>
+
+    <div class="info-grid">
+      <div class="info-box"><div class="num">25</div><div class="lbl">câu hỏi</div></div>
+      <div class="info-box"><div class="num">30</div><div class="lbl">phút</div></div>
+      <div class="info-box"><div class="num">10</div><div class="lbl">điểm</div></div>
+      <div class="info-box"><div class="num">4</div><div class="lbl">phần thi</div></div>
+    </div>
+
+    <div class="name-fields">
+      <div>
+        <label>Họ và tên</label>
+        <input type="text" id="input-name" placeholder="Nhập họ tên...">
+      </div>
+      <div>
+        <label>Lớp</label>
+        <input type="text" id="input-class" placeholder="Nhập lớp...">
+      </div>
+    </div>
+
+    <div class="rules">
+      <b>Cấu trúc đề:</b><br>
+      · Phần I.A — Chọn từ vựng thích hợp (10 câu, 3 điểm)<br>
+      · Phần I.B — Chọn cấu trúc ngữ pháp thích hợp (5 câu, 2 điểm)<br>
+      · Phần I.C — Nhận định Đúng/Sai + sửa lại (5 câu, 2 điểm)<br>
+      · Phần II — Sắp xếp từ/cụm từ thành câu hoàn chỉnh (5 câu, 3 điểm)<br><br>
+      <b>Lưu ý:</b> Đồng hồ bắt đầu đếm ngay khi bạn bấm "Bắt đầu làm bài" và không thể tạm dừng. Hết giờ, bài sẽ tự động được nộp.<br>
+      · ⚠️ <b>Bài thi sẽ tự động chuyển sang chế độ toàn màn hình.</b> Nếu bạn thoát khỏi chế độ toàn màn hình (bấm Esc, chuyển tab, chuyển ứng dụng...) trước khi nộp bài, <b>bài làm sẽ bị vô hiệu hóa ngay lập tức</b> và không được tính điểm. Hãy đóng các cửa sổ/ứng dụng khác trước khi bắt đầu.
+    </div>
+
+    <button class="btn-start" onclick="startQuiz()">▶ Bắt đầu làm bài (vào chế độ toàn màn hình)</button>
+  </div>
+</div>
+
+<!-- ================= QUIZ SCREEN ================= -->
+<div class="screen" id="screen-quiz">
+  <div class="topbar">
+    <div class="title">📝 HSK4 Bài 1–5</div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-txt" id="progress-txt">0/25 câu</div>
+    </div>
+    <div class="timer-box" id="timer-box">30:00</div>
+  </div>
+
+  <div class="screen-inner" style="padding:0 18px;">
+    <div class="section-head sec-a"><h2>🟡 Phần I.A — Chọn từ thích hợp điền vào chỗ trống</h2><span class="pts">10 câu · 3 điểm</span></div>
+    <div class="sec-a" id="section-a"></div>
+
+    <div class="section-head sec-b"><h2>🟣 Phần I.B — Chọn cấu trúc ngữ pháp thích hợp</h2><span class="pts">5 câu · 2 điểm</span></div>
+    <div class="sec-b" id="section-b"></div>
+
+    <div class="section-head sec-c"><h2>🌸 Phần I.C — Nhận định Đúng / Sai</h2><span class="pts">5 câu · 2 điểm</span></div>
+    <div class="sec-c" id="section-c"></div>
+
+    <div class="section-head sec-d"><h2>🟢 Phần II — Sắp xếp thành câu hoàn chỉnh</h2><span class="pts">5 câu · 3 điểm</span></div>
+    <div class="sec-d" id="section-d"></div>
+  </div>
+
+  <div class="submit-bar">
+    <button class="btn-submit" onclick="confirmSubmit()">✅ Nộp bài</button>
+  </div>
+</div>
+
+<!-- ================= RESULT SCREEN ================= -->
+<div class="screen" id="screen-result">
+  <div class="result-hero">
+    <div style="font-size:0.95rem; opacity:0.9;" id="res-name">Học sinh</div>
+    <div class="score"><span id="res-score">0</span><span>/10</span></div>
+    <div class="tier" id="res-tier">—</div>
+    <div class="msg" id="res-msg">—</div>
+  </div>
+
+  <div class="result-stats">
+    <div class="rstat"><div class="n" id="stat-correct">0</div><div class="l">Câu đúng</div></div>
+    <div class="rstat"><div class="n" id="stat-wrong">0</div><div class="l">Câu sai</div></div>
+    <div class="rstat"><div class="n" id="stat-time">0:00</div><div class="l">Thời gian làm</div></div>
+    <div class="rstat"><div class="n" id="stat-rate">0%</div><div class="l">Tỉ lệ chính xác</div></div>
+  </div>
+
+  <div id="review-list"></div>
+
+  <button class="btn-restart" onclick="location.reload()">↺ Làm lại đề khác / Thử lại</button>
+</div>
+
+<!-- ================= INVALIDATED SCREEN ================= -->
+<div class="screen" id="screen-invalid">
+  <div class="invalid-hero">
+    <div class="icon">🚫</div>
+    <h2>Bài làm đã bị VÔ HIỆU HÓA</h2>
+    <p>Bạn đã thoát khỏi chế độ toàn màn hình trong khi đang làm bài.<br>
+    Theo quy định của đề thi, bài làm này <b>không được tính điểm</b>.</p>
+  </div>
+  <div class="invalid-info">
+    <div><b>Trạng thái tại thời điểm thoát:</b></div>
+    <div id="invalid-detail" style="margin-top:6px;"></div>
+  </div>
+  <button class="btn-restart" onclick="location.reload()">↺ Làm lại từ đầu</button>
+</div>
+
+<div class="fs-banner" id="fs-banner">🔒 Đang trong chế độ toàn màn hình — không thoát ra cho đến khi nộp bài</div>
+
+<script>
+/* ================= DATA ================= */
+const DATA = {
+  a: [ // MCQ từ vựng — 0.3đ/câu
+    {q:'他<span class="zh">____</span>喜欢运动，也喜欢做饭。', opts:['不仅','最好','羡慕','甚至'], correct:0,
+      exp:'<span class="zh">不仅……也</span> diễn tả "không những... mà còn...", đúng cấu trúc liệt kê hai đặc điểm. <span class="zh">最好</span> (tốt nhất, mang tính khuyên nhủ), <span class="zh">羡慕</span> (ngưỡng mộ) và <span class="zh">甚至</span> (thậm chí, cần ngữ cảnh cực đoan) đều không hợp ngữ cảnh liệt kê ngang hàng này.'},
+    {q:'朋友之间应该<span class="zh">____</span>理解。', opts:['完全','即使','感动','互相'], correct:3,
+      exp:'<span class="zh">互相</span> (lẫn nhau) đúng nghĩa "bạn bè nên hiểu nhau, qua lại". <span class="zh">完全</span> (hoàn toàn) không sai ngữ pháp nhưng bỏ mất ý tương hỗ mà câu cần. <span class="zh">即使</span> là liên từ giả thiết, không bổ nghĩa cho động từ <span class="zh">理解</span>. <span class="zh">感动</span> (cảm động) sai nghĩa.'},
+    {q:'<span class="zh">____</span>的朋友不需要天天联系。', opts:['首先','丰富','好像','真正'], correct:3,
+      exp:'<span class="zh">真正</span> + 的 + danh từ = "bạn bè thực sự/chân chính". <span class="zh">首先</span> (trước hết) là liên từ mở đầu câu, không làm định ngữ. <span class="zh">丰富</span> (phong phú) sai nghĩa. <span class="zh">好像</span> (dường như) là phó từ, không làm định ngữ trực tiếp kiểu này.'},
+    {q:'有的朋友喜欢常常见面，<span class="zh">____</span>有的朋友更喜欢安静地陪伴。', opts:['却','并','刚','而'], correct:3,
+      exp:'<span class="zh">而</span> dùng để đối chiếu hai vế song song "có người... còn có người...". <span class="zh">却</span> (lại, thế mà) mang sắc thái chuyển ý bất ngờ, không hợp kiểu đối chiếu ngang hàng. <span class="zh">并</span> chỉ dùng nhấn mạnh phủ định (并不/并没). <span class="zh">刚</span> (vừa mới) là phó từ thời gian, sai nghĩa hoàn toàn.'},
+    {q:'他的条件很<span class="zh">____</span>这份工作的要求。', opts:['通知','符合','负责','适合'], correct:1,
+      exp:'<span class="zh">符合</span> đi liền với "yêu cầu/tiêu chuẩn" tạo thành cụm cố định <span class="zh">符合要求</span>. <span class="zh">适合</span> cũng nghĩa "phù hợp" nhưng thường đi với đối tượng người/việc trực tiếp (适合你), không tự nhiên khi đi với "要求". <span class="zh">通知</span> (thông báo) và <span class="zh">负责</span> (phụ trách) sai nghĩa.'},
+    {q:'<span class="zh">____</span>结果怎么样，我们都会尽力做好准备。', opts:['不管','感觉','诚实','通知'], correct:0,
+      exp:'<span class="zh">不管……都</span> hô ứng đúng nghĩa "bất kể... đều...". Ba phương án còn lại sai cả từ loại lẫn nghĩa, không thể đứng đầu câu điều kiện kiểu này.'},
+    {q:'这份工作并不<span class="zh">____</span>像想象中那么轻松。', opts:['成功','顺利','按照','完全'], correct:3,
+      exp:'<span class="zh">并不完全</span> (hoàn toàn không) nhấn mạnh sắc thái phủ định một phần — đúng ngữ cảnh. <span class="zh">成功</span>/<span class="zh">顺利</span> sai nghĩa ở vị trí này; <span class="zh">按照</span> là giới từ (theo, dựa vào), không thể đứng sau <span class="zh">并不</span>.'},
+    {q:'<span class="zh">____</span>都按照计划顺利进行。', opts:['任何','生意','一切','成功'], correct:2,
+      exp:'<span class="zh">一切</span> (tất cả, mọi việc) làm chủ ngữ khái quát, đúng ngữ pháp. <span class="zh">任何</span> (bất cứ) bắt buộc phải đi kèm danh từ cụ thể phía sau (任何事), không đứng một mình làm chủ ngữ như vậy. <span class="zh">生意</span> (việc kinh doanh) sai nghĩa hẹp; <span class="zh">成功</span> (thành công, danh từ trừu tượng) không hô ứng được với 都 kiểu này.'},
+    {q:'<span class="zh">____</span>东西都有优点和缺点。', opts:['任何','肯定','艺术','标准'], correct:0,
+      exp:'<span class="zh">任何</span> + danh từ + 都 = "bất cứ... đều..." — đúng cấu trúc. <span class="zh">肯定</span> (chắc chắn) sai từ loại (phó từ, không làm định ngữ cho danh từ). <span class="zh">艺术</span> (nghệ thuật) và <span class="zh">标准</span> (tiêu chuẩn) sai nghĩa.'},
+    {q:'<span class="zh">____</span>是运费就要一百块。', opts:['光','挺','却','亮'], correct:0,
+      exp:'<span class="zh">光</span> (chỉ, riêng) nhấn mạnh "chỉ riêng phí vận chuyển đã...". <span class="zh">挺</span> (rất, khá) là phó từ bổ nghĩa tính từ, sai vị trí/nghĩa. <span class="zh">却</span> (lại) và <span class="zh">亮</span> (sáng) sai nghĩa hoàn toàn.'}
+  ],
+  b: [ // MCQ ngữ pháp — 0.4đ/câu
+    {q:'<span class="zh">____</span>大家都反对，我<span class="zh">____</span>会坚持自己的想法。', opts:['不管……都','即使……也','只有……才','尽管……可是'], correct:1,
+      exp:'<span class="zh">即使……也</span> diễn tả giả thiết cực đoan chưa chắc xảy ra: "dù cho... cũng...". <span class="zh">不管……都</span> cần từ nghi vấn/lựa chọn phía sau (不管...还是...), không hợp câu khẳng định này. <span class="zh">只有……才</span> nghĩa "chỉ có... mới" sai logic điều kiện duy nhất. <span class="zh">尽管……可是</span> chỉ dùng cho sự thật đã xảy ra, còn đây là giả thiết chưa xảy ra trong thực tế.'},
+    {q:'大家都说这个办法不好，他<span class="zh">____</span>坚持要试一试。', opts:['而','才','并','却'], correct:3,
+      exp:'<span class="zh">却</span> (lại, thế mà) diễn tả sự chuyển ý bất ngờ — đúng ngữ cảnh trái với số đông. <span class="zh">而</span> dùng đối chiếu song song, không hợp sắc thái "bất ngờ" ở đây. <span class="zh">才</span> (mới) sai nghĩa. <span class="zh">并</span> chỉ dùng nhấn mạnh phủ định (并不/并没), không mang nghĩa "lại" khi đứng một mình.'},
+    {q:'这份工作<span class="zh">____</span>是给我朋友安排的，后来他不想去，就给了我。', opts:['从来','首先','原来','本来'], correct:3,
+      exp:'<span class="zh">本来</span> (vốn dĩ, lúc đầu) diễn tả tình huống ban đầu rồi có sự thay đổi — đúng ngữ cảnh "vốn dĩ là của bạn tôi, sau đó...". <span class="zh">原来</span> (hoá ra) chỉ dùng khi phát hiện ra sự thật trước đó không biết, không hợp ngữ cảnh "kế hoạch ban đầu rồi thay đổi". <span class="zh">从来</span> thường đi với phủ định; <span class="zh">首先</span> (trước hết) sai nghĩa.'},
+    {q:'我<span class="zh">____</span>今天是星期六，到了公司才发现没人上班。', opts:['原来','认为','本来','以为'], correct:3,
+      exp:'<span class="zh">以为</span> (tưởng là, nhưng thực tế sai) đúng ngữ cảnh "tưởng nhầm rồi phát hiện ra sai". <span class="zh">认为</span> (cho rằng) dùng cho quan điểm khách quan đúng đắn, không mang sắc thái "tưởng sai". <span class="zh">原来</span> (hoá ra) và <span class="zh">本来</span> (vốn dĩ) sai vị trí/nghĩa trong câu này.'},
+    {q:'我一直找不到钥匙，<span class="zh">____</span>忘在办公室了。', opts:['本来','从来','以为','原来'], correct:3,
+      exp:'<span class="zh">原来</span> (hoá ra) diễn tả việc phát hiện ra sự thật trước đó không biết — đúng ngữ cảnh "hoá ra bỏ quên ở văn phòng". <span class="zh">本来</span> (vốn dĩ) sai sắc thái vì đây không phải tình huống "ban đầu là...". <span class="zh">从来</span> sai nghĩa. <span class="zh">以为</span> (tưởng là) cần chủ ngữ + đối tượng nghĩ sai đi kèm, không hợp cấu trúc câu này.'}
+  ],
+  c: [ // Đúng/Sai — 0.4đ/câu
+    {q:'<span class="zh">我对来说，价格并不是最重要的，质量才是。</span>', correct:false,
+      fix:'<span class="zh">对我来说，价格并不是最重要的，质量才是。</span>',
+      exp:'Câu thiếu tân ngữ giữa <span class="zh">对</span> và <span class="zh">来说</span>. Cấu trúc đúng bắt buộc phải là <b>对 + (người/vật) + 来说</b> — ở đây thiếu chữ <span class="zh">我</span> ở giữa.'},
+    {q:'<span class="zh">尽管已经认识很多年了，可是不常联系。</span>', correct:true,
+      exp:'"Đã quen biết nhau nhiều năm" là một sự thật đã biết trước, hô ứng đúng với cặp <span class="zh">尽管……可是</span> (mặc dù... nhưng vẫn...).'},
+    {q:'<span class="zh">这个箱子他一个人搬不动，我们找另的人来帮忙吧。</span>', correct:false,
+      fix:'<span class="zh">我们找另外的人来帮忙吧。</span>',
+      exp:'<span class="zh">另</span> là đại từ chỉ định mang nghĩa "cái khác", không được thêm trực tiếp <span class="zh">的</span> phía sau khi không có lượng từ/danh từ đi kèm ngay sau nó. Muốn nói "người khác" phải dùng <span class="zh">另外的</span> + danh từ.'},
+    {q:'<span class="zh">请大家为了计划完成好这周的工作。</span>', correct:false,
+      fix:'<span class="zh">请大家按照计划完成好这周的工作。</span>',
+      exp:'<span class="zh">为了</span> biểu thị mục đích ("vì, để"), không phù hợp ngữ cảnh câu này cần diễn đạt "theo/dựa vào" một kế hoạch có sẵn. Phải dùng <span class="zh">按照</span> (theo, căn cứ vào).'},
+    {q:'<span class="zh">广告说得很好听，可是实际上用起来效果一般。</span>', correct:true,
+      exp:'<span class="zh">实际上</span> (trong thực tế) tạo sự đối lập đúng với vẻ ngoài hào nhoáng của quảng cáo — dùng chính xác.'}
+  ],
+  d: [ // Sắp xếp câu — 0.6đ/câu
+    {tokens:['家人','我','想','陪陪','在家','周末'], correctOrder:['周末','我','想','在家','陪陪','家人'],
+      point:'陪陪 (đi cùng, ở bên cạnh — dạng láy nhẹ nhàng)'},
+    {tokens:['贵多了','价格','这个','比','实际','价值'], correctOrder:['这个','价格','比','实际','价值','贵多了'],
+      point:'实际…价值 (so sánh với giá trị thực tế, dùng 比)'},
+    {tokens:['律师','他','当了','大学','毕业','以后'], correctOrder:['他','大学','毕业','以后','当了','律师'],
+      point:'当…律师 (làm luật sư — trình tự thời gian với 以后)'},
+    {tokens:['结果','面试','我','通知','没有','还','公司'], correctOrder:['公司','还','没有','通知','我','面试','结果'],
+      point:'通知…结果 (báo kết quả — trật tự song tân ngữ 通知我面试结果)'},
+    {tokens:['小时','半个','了','提前','会议','明天'], correctOrder:['明天','会议','提前','了','半个','小时'],
+      point:'提前 (làm sớm hơn dự kiến, đặt sau chủ ngữ 会议)'}
+  ]
+};
+
+const POINTS = {a:0.3, b:0.4, c:0.4, d:0.6};
+
+/* ================= STATE ================= */
+let state = {
+  answers: { a:{}, b:{}, c:{corr:{}, text:{}}, d:{} },
+  timeLeft: 30*60,
+  timerHandle: null,
+  startedAt: null,
+  totalQuestions: 25,
+  submitted:false,
+  quizActive:false,      // true only after fullscreen+timer successfully started
+  invalidated:false
+};
+
+/* ================= FULLSCREEN HELPERS ================= */
+function requestFS(el){
+  if(el.requestFullscreen) return el.requestFullscreen();
+  if(el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+  if(el.mozRequestFullScreen) return el.mozRequestFullScreen();
+  if(el.msRequestFullscreen) return el.msRequestFullscreen();
+  return Promise.reject(new Error('Fullscreen API không được hỗ trợ trên trình duyệt này.'));
+}
+function exitFS(){
+  if(document.exitFullscreen) return document.exitFullscreen().catch(()=>{});
+  if(document.webkitExitFullscreen) return document.webkitExitFullscreen();
+  if(document.mozCancelFullScreen) return document.mozCancelFullScreen();
+  if(document.msExitFullscreen) return document.msExitFullscreen();
+}
+function isFullscreen(){
+  return !!(document.fullscreenElement || document.webkitFullscreenElement ||
+            document.mozFullScreenElement || document.msFullscreenElement);
+}
+['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(evt=>{
+  document.addEventListener(evt, onFullscreenChange);
+});
+function onFullscreenChange(){
+  const banner = document.getElementById('fs-banner');
+  if(state.quizActive && !isFullscreen() && !state.submitted && !state.invalidated){
+    invalidateQuiz();
+    return;
+  }
+  if(banner) banner.style.display = (state.quizActive && isFullscreen()) ? 'block' : 'none';
+}
+
+/* ================= RENDER QUESTIONS ================= */
+function shuffleArr(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function renderSectionA(){
+  const el = document.getElementById('section-a');
+  DATA.a.forEach((item,i)=>{
+    const card = document.createElement('div');
+    card.className='q-card';
+    card.innerHTML = `
+      <div class="q-num">Câu ${i+1} / 25</div>
+      <div class="q-text"><span class="zh">${i+1}.</span> ${item.q}</div>
+      <div class="opts" id="opts-a-${i}"></div>
+    `;
+    el.appendChild(card);
+    const optsWrap = card.querySelector(`#opts-a-${i}`);
+    const letters=['A','B','C','D'];
+    item.opts.forEach((opt,oi)=>{
+      const d = document.createElement('div');
+      d.className='opt';
+      d.innerHTML = `<span class="letter">${letters[oi]}</span><span class="zh">${opt}</span>`;
+      d.onclick = ()=>{
+        state.answers.a[i]=oi;
+        optsWrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+        d.classList.add('selected');
+        updateProgress();
+      };
+      optsWrap.appendChild(d);
+    });
+  });
+}
+
+function renderSectionB(){
+  const el = document.getElementById('section-b');
+  DATA.b.forEach((item,i)=>{
+    const card = document.createElement('div');
+    card.className='q-card';
+    card.innerHTML = `
+      <div class="q-num">Câu ${11+i} / 25</div>
+      <div class="q-text">${11+i}. ${item.q}</div>
+      <div class="opts" id="opts-b-${i}"></div>
+    `;
+    el.appendChild(card);
+    const optsWrap = card.querySelector(`#opts-b-${i}`);
+    const letters=['A','B','C','D'];
+    item.opts.forEach((opt,oi)=>{
+      const d = document.createElement('div');
+      d.className='opt';
+      d.innerHTML = `<span class="letter">${letters[oi]}</span><span class="zh">${opt}</span>`;
+      d.onclick = ()=>{
+        state.answers.b[i]=oi;
+        optsWrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+        d.classList.add('selected');
+        updateProgress();
+      };
+      optsWrap.appendChild(d);
+    });
+  });
+}
+
+function renderSectionC(){
+  const el = document.getElementById('section-c');
+  DATA.c.forEach((item,i)=>{
+    const card = document.createElement('div');
+    card.className='q-card';
+    card.innerHTML = `
+      <div class="q-num">Câu ${16+i} / 25</div>
+      <div class="q-text">${16+i}. ${item.q}</div>
+      <div class="tf-row" id="tf-${i}">
+        <div class="tf-btn" data-v="true">✅ Đúng</div>
+        <div class="tf-btn" data-v="false">❌ Sai</div>
+      </div>
+      <div class="correction-field">
+        <label>Nếu chọn "Sai", hãy viết lại câu đúng (không bắt buộc, chỉ để bạn tự đối chiếu):</label>
+        <textarea id="corr-text-${i}" placeholder="Viết câu sửa lại tại đây..."></textarea>
+      </div>
+    `;
+    el.appendChild(card);
+    const tfWrap = card.querySelector(`#tf-${i}`);
+    tfWrap.querySelectorAll('.tf-btn').forEach(btn=>{
+      btn.onclick = ()=>{
+        state.answers.c.corr[i] = (btn.dataset.v==='true');
+        tfWrap.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        updateProgress();
+      };
+    });
+    const ta = card.querySelector(`#corr-text-${i}`);
+    ta.oninput = ()=>{ state.answers.c.text[i] = ta.value; };
+  });
+}
+
+function renderSectionD(){
+  const el = document.getElementById('section-d');
+  DATA.d.forEach((item,i)=>{
+    const shuffled = shuffleArr(item.tokens);
+    const card = document.createElement('div');
+    card.className='q-card';
+    card.innerHTML = `
+      <div class="q-num">Câu ${21+i} / 25</div>
+      <div class="q-text">${21+i}. Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:</div>
+      <div class="reorder-answer" id="d-answer-${i}"><span class="chip-empty-hint">Bấm vào các từ bên dưới theo đúng thứ tự...</span></div>
+      <div class="reorder-pool" id="d-pool-${i}"></div>
+      <div class="reorder-tools"><button class="btn-reset" id="d-reset-${i}">↺ Làm lại</button></div>
+    `;
+    el.appendChild(card);
+
+    const poolWrap = card.querySelector(`#d-pool-${i}`);
+    const ansWrap = card.querySelector(`#d-answer-${i}`);
+    const resetBtn = card.querySelector(`#d-reset-${i}`);
+    state.answers.d[i] = [];
+
+    function renderChips(){
+      poolWrap.innerHTML='';
+      shuffled.forEach((tok,ti)=>{
+        if(state.answers.d[i].includes(ti)) return;
+        const chip = document.createElement('div');
+        chip.className='chip zh';
+        chip.textContent = tok;
+        chip.onclick = ()=>{
+          state.answers.d[i].push(ti);
+          renderAnswer(); renderChips(); updateProgress();
+        };
+        poolWrap.appendChild(chip);
+      });
+    }
+    function renderAnswer(){
+      if(state.answers.d[i].length===0){
+        ansWrap.innerHTML = '<span class="chip-empty-hint">Bấm vào các từ bên dưới theo đúng thứ tự...</span>';
+        return;
+      }
+      ansWrap.innerHTML='';
+      state.answers.d[i].forEach((ti)=>{
+        const chip = document.createElement('div');
+        chip.className='chip zh';
+        chip.textContent = shuffled[ti];
+        chip.onclick = ()=>{
+          state.answers.d[i] = state.answers.d[i].filter(x=>x!==ti);
+          renderAnswer(); renderChips(); updateProgress();
+        };
+        ansWrap.appendChild(chip);
+      });
+    }
+    resetBtn.onclick = ()=>{ state.answers.d[i]=[]; renderAnswer(); renderChips(); updateProgress(); };
+    renderChips(); renderAnswer();
+    card.dataset.shuffled = JSON.stringify(shuffled);
+    DATA.d[i]._shuffled = shuffled; // store for grading
+  });
+}
+
+/* ================= PROGRESS ================= */
+function countAnswered(){
+  let n=0;
+  for(let i=0;i<10;i++) if(state.answers.a[i]!==undefined) n++;
+  for(let i=0;i<5;i++) if(state.answers.b[i]!==undefined) n++;
+  for(let i=0;i<5;i++) if(state.answers.c.corr[i]!==undefined) n++;
+  for(let i=0;i<5;i++) if(state.answers.d[i] && state.answers.d[i].length===DATA.d[i].tokens.length) n++;
+  return n;
+}
+function updateProgress(){
+  const n = countAnswered();
+  document.getElementById('progress-fill').style.width = (n/25*100)+'%';
+  document.getElementById('progress-txt').textContent = n+'/25 câu';
+}
+
+/* ================= TIMER ================= */
+function formatTime(s){
+  const m = Math.floor(s/60);
+  const sec = s%60;
+  return m+':'+String(sec).padStart(2,'0');
+}
+function tickTimer(){
+  state.timeLeft--;
+  const box = document.getElementById('timer-box');
+  box.textContent = formatTime(Math.max(state.timeLeft,0));
+  box.classList.remove('warn','danger');
+  if(state.timeLeft<=300 && state.timeLeft>60) box.classList.add('warn');
+  if(state.timeLeft<=60) box.classList.add('danger');
+  if(state.timeLeft<=0){
+    clearInterval(state.timerHandle);
+    submitQuiz(true);
+  }
+}
+
+/* ================= START / SUBMIT ================= */
+function startQuiz(){
+  requestFS(document.documentElement).then(()=>{
+    renderSectionA(); renderSectionB(); renderSectionC(); renderSectionD();
+    document.getElementById('screen-start').classList.remove('active');
+    document.getElementById('screen-quiz').classList.add('active');
+    state.startedAt = Date.now();
+    state.timerHandle = setInterval(tickTimer, 1000);
+    state.quizActive = true;
+    updateProgress();
+    window.scrollTo(0,0);
+  }).catch(()=>{
+    alert('Không thể bật chế độ toàn màn hình (trình duyệt chặn hoặc không hỗ trợ). Vui lòng cho phép toàn màn hình rồi bấm "Bắt đầu làm bài" lại.');
+  });
+}
+
+function invalidateQuiz(){
+  if(state.invalidated || state.submitted) return;
+  state.invalidated = true;
+  state.quizActive = false;
+  clearInterval(state.timerHandle);
+  const elapsed = 30*60 - Math.max(state.timeLeft,0);
+  const n = countAnswered();
+  document.getElementById('screen-quiz').classList.remove('active');
+  document.getElementById('screen-result').classList.remove('active');
+  document.getElementById('screen-invalid').classList.add('active');
+  document.getElementById('invalid-detail').innerHTML =
+    `Đã làm được <b>${n}/25</b> câu · Thời gian đã dùng: <b>${formatTime(elapsed)}</b>`;
+  const banner = document.getElementById('fs-banner');
+  if(banner) banner.style.display='none';
+  window.scrollTo(0,0);
+}
+
+function confirmSubmit(){
+  const n = countAnswered();
+  const missing = 25-n;
+  let msg = 'Bạn có chắc chắn muốn nộp bài không?';
+  if(missing>0) msg = `Bạn còn ${missing} câu chưa hoàn thành. Vẫn muốn nộp bài?`;
+  if(confirm(msg)) submitQuiz(false);
+}
+
+function submitQuiz(auto){
+  if(state.submitted || state.invalidated) return;
+  state.submitted = true;
+  state.quizActive = false;
+  clearInterval(state.timerHandle);
+  if(isFullscreen()) exitFS();
+  const elapsed = 30*60 - Math.max(state.timeLeft,0);
+
+  let totalScore = 0;
+  let correctCount = 0;
+  let wrongCount = 0;
+  const reviewRows = [];
+
+  // Section A
+  DATA.a.forEach((item,i)=>{
+    const chosen = state.answers.a[i];
+    const isCorrect = chosen === item.correct;
+    if(isCorrect){ totalScore += POINTS.a; correctCount++; } else wrongCount++;
+    reviewRows.push({
+      sec:'I.A', num:i+1, correct:isCorrect,
+      qHtml: item.q.replace(/____/g,'<span class="zh">____</span>'),
+      yourAns: chosen!==undefined ? `${['A','B','C','D'][chosen]}. <span class="zh">${item.opts[chosen]}</span>` : '<i>(chưa chọn)</i>',
+      correctAns: `${['A','B','C','D'][item.correct]}. <span class="zh">${item.opts[item.correct]}</span>`,
+      exp: item.exp
+    });
+  });
+
+  // Section B
+  DATA.b.forEach((item,i)=>{
+    const chosen = state.answers.b[i];
+    const isCorrect = chosen === item.correct;
+    if(isCorrect){ totalScore += POINTS.b; correctCount++; } else wrongCount++;
+    reviewRows.push({
+      sec:'I.B', num:11+i, correct:isCorrect,
+      qHtml: item.q,
+      yourAns: chosen!==undefined ? `${['A','B','C','D'][chosen]}. <span class="zh">${item.opts[chosen]}</span>` : '<i>(chưa chọn)</i>',
+      correctAns: `${['A','B','C','D'][item.correct]}. <span class="zh">${item.opts[item.correct]}</span>`,
+      exp: item.exp
+    });
+  });
+
+  // Section C
+  DATA.c.forEach((item,i)=>{
+    const chosen = state.answers.c.corr[i];
+    const isCorrect = chosen === item.correct;
+    if(isCorrect){ totalScore += POINTS.c; correctCount++; } else wrongCount++;
+    reviewRows.push({
+      sec:'I.C', num:16+i, correct:isCorrect,
+      qHtml: item.q,
+      yourAns: chosen===undefined ? '<i>(chưa chọn)</i>' : (chosen ? '✅ Đúng' : '❌ Sai'),
+      correctAns: item.correct ? '✅ Đúng' : ('❌ Sai — ' + item.fix),
+      exp: item.exp
+    });
+  });
+
+  // Section D
+  DATA.d.forEach((item,i)=>{
+    const shuffled = item._shuffled || item.tokens;
+    const chosenIdx = state.answers.d[i] || [];
+    const chosenTokens = chosenIdx.map(ti=>shuffled[ti]);
+    const isCorrect = chosenTokens.length===item.correctOrder.length &&
+      chosenTokens.every((t,ti)=>t===item.correctOrder[ti]);
+    if(isCorrect){ totalScore += POINTS.d; correctCount++; } else wrongCount++;
+    reviewRows.push({
+      sec:'II', num:21+i, correct:isCorrect,
+      qHtml: 'Sắp xếp: <span class="zh">' + item.tokens.join(' / ') + '</span>',
+      yourAns: chosenTokens.length ? `<span class="zh">${chosenTokens.join('')}</span>` : '<i>(chưa ghép câu)</i>',
+      correctAns: `<span class="zh">${item.correctOrder.join('')}</span>`,
+      exp: `Điểm ngữ pháp/từ vựng trọng tâm: <span class="zh">${item.point.split(' ')[0]}</span> — ${item.point}.`
+    });
+  });
+
+  renderResult(totalScore, correctCount, wrongCount, elapsed, reviewRows, auto);
+}
+
+/* ================= RESULT RENDER ================= */
+function tierInfo(score){
+  if(score>=9) return {tier:'🏆 Xuất sắc!', msg:'Nắm rất chắc từ vựng và ngữ pháp HSK4 Bài 1–5. Tiếp tục phát huy nhé!'};
+  if(score>=7) return {tier:'🌟 Giỏi', msg:'Nền tảng tốt, chỉ còn vài điểm nhỏ cần lưu ý thêm.'};
+  if(score>=5) return {tier:'👍 Khá', msg:'Đã nắm được kiến thức cơ bản, cần ôn lại các cấu trúc hay nhầm lẫn.'};
+  return {tier:'📚 Cần cố gắng thêm', msg:'Nên xem lại kỹ phần giải thích bên dưới và ôn tập lại Bài 1–5.'};
+}
+
+function renderResult(score, correctCount, wrongCount, elapsed, rows, auto){
+  document.getElementById('screen-quiz').classList.remove('active');
+  document.getElementById('screen-result').classList.add('active');
+
+  const name = document.getElementById('input-name').value.trim();
+  const cls = document.getElementById('input-class').value.trim();
+  document.getElementById('res-name').textContent =
+    (name? name : 'Học sinh') + (cls? ' — Lớp '+cls : '') + (auto? ' (hết giờ, tự động nộp bài)':'');
+
+  const roundedScore = Math.round(score*10)/10;
+  document.getElementById('res-score').textContent = roundedScore;
+  const t = tierInfo(roundedScore);
+  document.getElementById('res-tier').textContent = t.tier;
+  document.getElementById('res-msg').textContent = t.msg;
+
+  document.getElementById('stat-correct').textContent = correctCount;
+  document.getElementById('stat-wrong').textContent = wrongCount;
+  document.getElementById('stat-time').textContent = formatTime(elapsed);
+  document.getElementById('stat-rate').textContent = Math.round(correctCount/25*100)+'%';
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+  let lastSec = '';
+  const secTitles = {'I.A':'🟡 Phần I.A — Từ vựng','I.B':'🟣 Phần I.B — Ngữ pháp','I.C':'🌸 Phần I.C — Đúng/Sai','II':'🟢 Phần II — Sắp xếp câu'};
+  rows.forEach(r=>{
+    if(r.sec!==lastSec){
+      const h = document.createElement('div');
+      h.className='section-mini-title';
+      h.textContent = secTitles[r.sec];
+      list.appendChild(h);
+      lastSec = r.sec;
+    }
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (r.correct? 'correct':'wrong');
+    div.innerHTML = `
+      <div class="rh"><span class="mark">${r.correct? '✅':'❌'}</span> Câu ${r.num}</div>
+      <div class="rq">${r.qHtml}</div>
+      <div class="ans-line"><b>Bạn chọn:</b> ${r.yourAns}</div>
+      ${!r.correct ? `<div class="ans-line"><b>Đáp án đúng:</b> ${r.correctAns}</div>` : ''}
+      ${!r.correct ? `<div class="explain-box"><b>Giải thích:</b> ${r.exp}</div>` : ''}
+    `;
+    list.appendChild(div);
+  });
+
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
